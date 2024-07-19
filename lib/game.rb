@@ -18,7 +18,7 @@ class Game
     end
     board.join(" | ")
   end
-  
+
 
   def player_choice
     @input.each_with_index do |number, index|
@@ -38,8 +38,8 @@ class Game
       end
     end
     @results
-  end  
-  
+  end
+
   def results
     @results.each do |result|
       if result == "correct"
@@ -53,8 +53,12 @@ class Game
     puts "You guessed #{@total_correct} numbers in the correct location"
     puts "You guessed #{@total_number} numbers correct but in the wrong location"
     puts "You have #{4 - @total_correct - @total_number} numbers incorrect"
-    @total_correct = 0
-    @total_number = 0
+    if @total_correct == 4
+      return "win"
+    else
+      @total_correct = 0
+      @total_number = 0
+    end
   end
 
   def win
