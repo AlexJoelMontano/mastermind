@@ -5,6 +5,7 @@ game = Game.new
 
 round = 1
 
+puts ''
 puts 'Welcome to Mastermind!'
 puts ''
 puts 'Game Rules: You have 12 rounds to try and guess the 4 computer generated numbers.'
