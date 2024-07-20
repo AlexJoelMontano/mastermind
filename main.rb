@@ -17,11 +17,14 @@ puts '  -you have the correct number in the correct location'
 puts '  -correct number but in the wrong location'
 puts '  -or incorrect number.'
 puts ''
-puts '-Numbers are single digit only'
+puts '***Numbers are single digit only***'
 puts ''
 puts 'Press Enter to Play!'
+
 gets.chomp
+
 game_over = false
+
 until game_over == true
   puts ''
   puts "Round #{round}"

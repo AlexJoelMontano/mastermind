@@ -13,7 +13,6 @@ class Gen
       else
         @numbers[index] = number
       end
-        puts @numbers[index]
     end
   end
 

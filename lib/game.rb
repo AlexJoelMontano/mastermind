@@ -23,7 +23,15 @@ class Game
   def player_choice
     @input.each_with_index do |number, index|
       print "Enter number for slot #{index + 1}: "
-      @input[index] = gets.chomp.to_i
+      input = gets.chomp.to_i
+      if input > 10
+        puts "***Warning number needs to be a single digit***"
+        input
+      elsif input.to_i == false
+        game_over = true
+      else
+        @input[index] = input
+      end
     end
   end
 
