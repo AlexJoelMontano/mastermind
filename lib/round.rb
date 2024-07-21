@@ -22,6 +22,10 @@ class Round
     board.join(" | ")
   end
 
+  def computer_choice
+    @comp_choice
+  end
+
   def player_choice
     @input.each_with_index do |number, index|
       print "Enter number for slot #{index + 1}: "
@@ -50,6 +54,20 @@ class Round
       if number.to_i == @comp_choice[index]
         @results[index] = "correct"
       elsif @comp_choice.include?(number.to_i)
+        @results[index] = "yes"
+      else
+        @results[index] = "no"
+      end
+
+    end
+    @results
+  end
+  def continuing
+    @input.each_with_index do |number, index|
+
+      if number.to_i == Save_computer[index]
+        @results[index] = "correct"
+      elsif Save_computer.include?(number.to_i)
         @results[index] = "yes"
       else
         @results[index] = "no"
@@ -90,7 +108,7 @@ class Round
     end
   end
   def save_content
-    "you got #{@total_correct} correct ,#{@total_number} incorrect space but correct, and #{4 - @total_correct - @total_number} wrong. Your Choice #{@input}"
+    "[ #{@total_correct} ] Correct  |  [ #{@total_number} ] incorrect space but correct  |  [ #{4 - @total_correct - @total_number} ] wrong | Your Choices and their location: **#{@input}**"
   end
 
   def round_reset

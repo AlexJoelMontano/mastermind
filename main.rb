@@ -11,7 +11,7 @@ class Game
       @play = Round.new
       @index = 0
       @save = LinkedList.new
-      @save_game = Array.new(12)
+      @save_game = Array.new
       @file = "./lib/save.rb"
     end
 
@@ -86,19 +86,94 @@ class Game
     end
 
     def write
-      File.open(@file, 'w') { |file| file.write("Save_file = #{@save_game}") }
+      File.open(@file, 'w') { |file| file.write("Save_file = #{@save_game}\n") }
+      File.write(@file, "Save_computer = #{@play.computer_choice}", mode: 'a+')
+    end
+
+    def continue_round
+
+      puts ''
+      puts "Round #{New_round[0]}"
+      puts ''
+      puts '-----------------'
+      puts "| #{@play.board} |"
+      puts '-----------------'
+      puts ''
+
+      @play.player_choice
+
+      puts ''
+      puts "Your choices for round #{New_round[0]}"
+      puts '-----------------'
+      puts "| #{@play.show_choice} |"
+      puts '-----------------'
+      puts ''
+
+      @play.continuing
+      @play.finding_results
+
+      puts "Your Results for round #{New_round[0]}"
+
+      @play.results
+      New_round[0] += 1
+    end
+
+    def continue_game
+      until @game_over == true
+        @index = New_round[0]
+        continue_round
+        @save_game[@index] = "In round #{New_round[0]-1}: #{@play.save_content}"
+        if New_round[0] == 13
+          @game_over = true
+          puts ''
+          puts '^^^^^^^^^^^^^^^^^^^^^^^^^^'
+          puts '***    <Game Over>    ***'
+          puts '*** THE COMPUTER WINS!***'
+          puts '--------------------------'
+          puts ''
+        elsif @play.win == "win"
+          @game_over = true
+          puts ''
+          puts '$$$ ******************* $$$'
+          puts '$$$ *  -------------  * $$$'
+          puts '$$$ *  |  You Win  |  * $$$'
+          puts '$$$ *  -------------  * $$$'
+          puts '$$$ ******************* $$$'
+          puts ''
+        elsif @play.save_input == true
+          @game_over = true
+        end
+        @index += 1
+        @play.round_reset
+      end
     end
 end
+
+count = Save_file.length
+found = 12 - count
+New_round = [count+1]
 
 master = Game.new
 master.title
 puts "Load saved game?(y) or New game?(n)"
 choice = gets.chomp
 if choice == 'y'
-  puts Save_file
+  puts '___________________________________________________________________________'
+  puts ''
+  puts "You have #{found}/12 rounds remaining"
+  Save_file.each do |line|
+    if line != nil
+      puts line
+    end
+  end
+  master.continue_game
+  input = gets.chomp
+  if input == 'save'
+      master.write
+  end
+
 else
   master.play_game
-  master.saved
   input = gets.chomp
   if input == 'save'
       master.write
