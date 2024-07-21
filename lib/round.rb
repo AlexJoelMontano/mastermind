@@ -1,5 +1,6 @@
 require_relative('./gen')
-require_relative('./hash_map')
+require_relative('./linked_list')
+require_relative('./save')
 
 class Round
   def initialize
@@ -8,6 +9,7 @@ class Round
     @results = Array.new(4)
     @total_correct = 0
     @total_number = 0
+    @saving = false
   end
 
   def board
@@ -20,32 +22,39 @@ class Round
     board.join(" | ")
   end
 
-
   def player_choice
     @input.each_with_index do |number, index|
       print "Enter number for slot #{index + 1}: "
-      input = gets.chomp.to_i
-      if input > 10
-        puts "***Warning number needs to be a single digit***"
-        input
-      elsif input.to_i == false
-        @game_over = true
+      player = gets.chomp
+      if player.to_i > 10
+        puts "***Number has to be a single digit***"
       else
-        @input[index] = input
+        @input[index] = player
       end
+    end
+    puts "Press [Enter] for results or [s] to save and quit"
+    saving = gets.chomp
+    if saving == 's'
+      @saving = true
     end
     @input
   end
 
+  def show_choice
+    @input.join(" | ")
+  end
+
   def comparing
     @input.each_with_index do |number, index|
-      if number == @comp_choice[index]
+
+      if number.to_i == @comp_choice[index]
         @results[index] = "correct"
-      elsif @comp_choice.include?(number)
+      elsif @comp_choice.include?(number.to_i)
         @results[index] = "yes"
       else
         @results[index] = "no"
       end
+
     end
     @results
   end
@@ -63,15 +72,25 @@ class Round
   end
 
   def results
-    puts "You guessed #{@total_correct} numbers in the correct location"
-    puts "You guessed #{@total_number} numbers correct but in the wrong location"
-    puts "You have #{4 - @total_correct - @total_number} numbers incorrect"
+    puts '---------------------------------------------------------------------------'
+    puts "***  You guessed [ #{@total_correct} ] numbers in the CORRECT location           ***"
+    puts "***  You guessed [ #{@total_number} ] numbers correct but in the WRONG location ***"
+    puts "***  You have [ #{4 - @total_correct - @total_number} ] numbers INCORRECT                            ***"
+    puts '---------------------------------------------------------------------------'
+  end
+
+  def win
     if @total_correct == 4
       return "win"
     end
   end
-  def saving
-    "you got #{@total_correct} correct ,#{@total_number} incorrect space but correct, and #{4 - @total_correct - @total_number} wrong"
+  def save_input
+    if @saving == true
+      return true
+    end
+  end
+  def save_content
+    "you got #{@total_correct} correct ,#{@total_number} incorrect space but correct, and #{4 - @total_correct - @total_number} wrong. Your Choice #{@input}"
   end
 
   def round_reset

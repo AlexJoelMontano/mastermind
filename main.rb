@@ -1,6 +1,7 @@
 require_relative('./lib/gen')
 require_relative('./lib/round')
-require_relative('./lib/hash_map')
+require_relative('./lib/linked_list')
+require_relative('./lib/save')
 require 'yaml'
 
 class Game
@@ -9,8 +10,9 @@ class Game
       @round = 1
       @play = Round.new
       @index = 0
-      @save = Save
+      @save = LinkedList.new
       @save_game = Array.new(12)
+      @file = "./lib/save.rb"
     end
 
     def title
@@ -28,7 +30,7 @@ class Game
       puts ''
       puts '***Numbers are single digit only***'
       puts ''
-      puts 'Press Enter to Play!'
+      puts 'Please choose:'
     end
 
     def round
@@ -41,15 +43,23 @@ class Game
       puts ''
       @play.player_choice
       puts ''
+      puts "Your choices for round #{@round}"
+      puts '-----------------'
+      puts "| #{@play.show_choice} |"
+      puts '-----------------'
+      puts ''
       @play.comparing
       @play.finding_results
+      puts "Your Results for round #{@round}"
+      @play.results
       @round += 1
     end
 
     def play_game
       until @game_over == true
+        puts '___________________________________________________________________________'
         round
-        @save_game[@index] = "In round #{@round}: #{@play.saving}"
+        @save_game[@index] = "In round #{@round-1}: #{@play.save_content}"
         if @round == 13
           @game_over = true
           puts ''
@@ -58,7 +68,7 @@ class Game
           puts '*** THE COMPUTER WINS!***'
           puts '--------------------------'
           puts ''
-        elsif @play.results == "win"
+        elsif @play.win == "win"
           @game_over = true
           puts ''
           puts '$$$ ******************* $$$'
@@ -67,34 +77,30 @@ class Game
           puts '$$$ *  -------------  * $$$'
           puts '$$$ ******************* $$$'
           puts ''
+        elsif @play.save_input == true
+          @game_over = true
         end
-        puts '___________________________________________________'
         @index += 1
         @play.round_reset
       end
     end
 
-    def saved
-      num_words = ["zero","one","two","three","four","five","six","seven","eight","nine","ten","eleven"]
-          @save_game.each_with_index do |content,index|
-            @save.set(num_words[index],content)
-          end
-    end
-    def show
-      num_words = ["zero","one","two","three","four","five","six","seven","eight","nine","ten","eleven"]
-      num_words.each do |num|
-        puts "Round #{@round}: #{@save.get(num)}"
-      end
+    def write
+      File.open(@file, 'w') { |file| file.write("Save_file = #{@save_game}") }
     end
 end
 
 master = Game.new
 master.title
-gets.chomp
-master.play_game
-master.saved
-puts
-input = gets.chomp
-if input == 'save'
-    master.show
+puts "Load saved game?(y) or New game?(n)"
+choice = gets.chomp
+if choice == 'y'
+  puts Save_file
+else
+  master.play_game
+  master.saved
+  input = gets.chomp
+  if input == 'save'
+      master.write
+  end
 end
