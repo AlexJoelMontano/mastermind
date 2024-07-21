@@ -1,2 +1,0 @@
-Save_file = ["In round 1: [ 0 ] Correct  |  [ 0 ] incorrect space but correct  |  [ 4 ] wrong | Your Choices and their location: **[\"1\", \"2\", \"3\", \"4\"]**", "In round 2: [ 0 ] Correct  |  [ 0 ] incorrect space but correct  |  [ 4 ] wrong | Your Choices and their location: **[\"1\", \"2\", \"3\", \"4\"]**"]
-Save_computer = [9, 7, 5, 6]
