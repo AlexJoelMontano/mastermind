@@ -1,6 +1,7 @@
 require_relative('./gen')
+require_relative('./hash_map')
 
-class Game
+class Round
   def initialize
     @comp_choice = Gen.new.gen_numbers
     @input = Array.new(4)
@@ -28,11 +29,12 @@ class Game
         puts "***Warning number needs to be a single digit***"
         input
       elsif input.to_i == false
-        game_over = true
+        @game_over = true
       else
         @input[index] = input
       end
     end
+    @input
   end
 
   def comparing
@@ -48,7 +50,7 @@ class Game
     @results
   end
 
-  def results
+  def finding_results
     @results.each do |result|
       if result == "correct"
         @total_correct += 1
@@ -58,23 +60,22 @@ class Game
         next
       end
     end
+  end
+
+  def results
     puts "You guessed #{@total_correct} numbers in the correct location"
     puts "You guessed #{@total_number} numbers correct but in the wrong location"
     puts "You have #{4 - @total_correct - @total_number} numbers incorrect"
     if @total_correct == 4
       return "win"
-    else
-      @total_correct = 0
-      @total_number = 0
     end
   end
-
-  def win
-    if @total_correct == 4
-      true
-    else
-      false
-    end
+  def saving
+    "you got #{@total_correct} correct ,#{@total_number} incorrect space but correct, and #{4 - @total_correct - @total_number} wrong"
   end
 
+  def round_reset
+    @total_correct = 0
+    @total_number = 0
+end
 end
