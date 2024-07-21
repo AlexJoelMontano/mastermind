@@ -55,12 +55,17 @@ class Game
       @round += 1
     end
 
+    def restart
+      File.open(@file, 'w') { |file| file.write("Save_file = []") }
+    end
+
     def play_game
       until @game_over == true
         puts '___________________________________________________________________________'
         round
         @save_game[@index] = "In round #{@round-1}: #{@play.save_content}"
         if @round == 13
+          restart
           @game_over = true
           puts ''
           puts '^^^^^^^^^^^^^^^^^^^^^^^^^^'
@@ -70,6 +75,7 @@ class Game
           puts ''
         elsif @play.win == "win"
           @game_over = true
+          restart
           puts ''
           puts '$$$ ******************* $$$'
           puts '$$$ *  -------------  * $$$'
@@ -125,6 +131,7 @@ class Game
         @save_game[@index] = "In round #{New_round[0]-1}: #{@play.save_content}"
         if New_round[0] == 13
           @game_over = true
+          restart
           puts ''
           puts '^^^^^^^^^^^^^^^^^^^^^^^^^^'
           puts '***    <Game Over>    ***'
@@ -132,6 +139,7 @@ class Game
           puts '--------------------------'
           puts ''
         elsif @play.win == "win"
+          restart
           @game_over = true
           puts ''
           puts '$$$ ******************* $$$'
@@ -153,11 +161,19 @@ count = Save_file.length
 found = 12 - count
 New_round = [count+1]
 
+def save
+  puts 'Do you want to save this game? (y/n)'
+  input = gets.chomp
+  if input == 'save'
+      master.write
+  end
+end
+
 master = Game.new
 master.title
 puts "Load saved game?(y) or New game?(n)"
 choice = gets.chomp
-if choice == 'y'
+if choice == 'y' && Save_file.length > 1
   puts '___________________________________________________________________________'
   puts ''
   puts "You have #{found}/12 rounds remaining"
@@ -167,15 +183,17 @@ if choice == 'y'
     end
   end
   master.continue_game
-  input = gets.chomp
-  if input == 'save'
-      master.write
-  end
-
+  save
+elsif choice == 'y' && Save_file.length < 1
+  puts ''
+  puts ''
+  puts '*** You do not have a saved game file ***'
+  puts ''
+  puts '*** Starting a new game... ***'
+  puts ''
+  master.play_game
+  save
 else
   master.play_game
-  input = gets.chomp
-  if input == 'save'
-      master.write
-  end
+  save
 end
